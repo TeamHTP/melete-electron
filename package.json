@@ -1,0 +1,24 @@
+{
+  "name": "melete",
+  "version": "1.0.0",
+  "description": "Visual JS debugging and education tool.",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [
+    "debugger",
+    "education",
+    "learning"
+  ],
+  "author": "Tianyi Ma <tn.ma@outlook.com>",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "electron": "^1.8.4",
+    "electron-rebuild": "^1.7.3"
+  },
+  "dependencies": {
+    "chrome-remote-interface": "^0.25.5",
+    "ws": "^5.1.1"
+  }
+}
