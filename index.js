@@ -42,7 +42,7 @@ function createInspectorProcess (file) {
       debuggerUrl = line.match(/ws:\/\/.+?:.+?\/.{36}/g)[0];
       console.log(debuggerUrl);
       let meleteDebugger = new MeleteDebugger(win, debuggerUrl);
-      //meleteDebugger.attach();
+      meleteDebugger.attach();
     }
   });
 
