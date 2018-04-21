@@ -1,4 +1,4 @@
-const {app, BrowserWindow} = require('electron');
+const {app, BrowserWindow, ipcMain} = require('electron');
 const path = require('path');
 const url = require('url');
 
@@ -21,7 +21,12 @@ function createWindow () {
 
   win.webContents.openDevTools();
 
-  createInspectorProcess('./res/samples/merge_sort.js');
+  ipcMain.on('startDebugger', (event, args) => {
+    createInspectorProcess(args.filePath);
+    event.sender.send('startDebugger', '');
+  });
+
+  //createInspectorProcess('./res/samples/merge_sort.js');
 
   win.on('closed', () => {
     win = null;
