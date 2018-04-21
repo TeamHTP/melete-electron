@@ -1,6 +1,7 @@
 const {app, BrowserWindow, ipcMain} = require('electron');
 const path = require('path');
 const url = require('url');
+const fs = require('fs');
 
 const MeleteDebugger = require('./lib/melete-debugger.js');
 
@@ -20,6 +21,14 @@ function createWindow () {
   }));
 
   win.webContents.openDevTools();
+
+  ipcMain.on('writeTempFile', (event, args) => {
+    fs.writeFile('temp.js', args.code, (err) => {
+      if (err)
+        event.sender.send('writeTempFile', err);
+      event.sender.send('writeTempFile', {path: 'temp.js'});
+    });
+  });
 
   ipcMain.on('startDebugger', (event, args) => {
     createInspectorProcess(args.filePath);
