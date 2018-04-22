@@ -41,6 +41,12 @@ function createWindow () {
     meleteDebugger = null;
     inspector.kill();
     inspector = null;
+    ipcMain.removeAllListeners('step');
+    ipcMain.removeAllListeners('startAutoStep');
+    ipcMain.removeAllListeners('stopAutoStep');
+    ipcMain.removeAllListeners('inspectorMethod');
+    ipcMain.removeAllListeners('run');
+    ipcMain.removeAllListeners('close');
     event.sender.send('stopDebugger', '');
   });
 
