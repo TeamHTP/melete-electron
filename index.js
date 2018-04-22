@@ -20,7 +20,7 @@ function createWindow () {
     slashes: true
   }));
 
-  win.webContents.openDevTools();
+  //win.webContents.openDevTools();
 
   ipcMain.on('writeTempFile', (event, args) => {
     fs.writeFile('temp.js', args.code, (err) => {
@@ -47,6 +47,7 @@ function createInspectorProcess (file) {
 
   inspector.stdout.on('data', (data) => {
     console.log(`stdout: ${data}`);
+    win.webContents.send('stdout', data);
   });
 
   inspector.stderr.on('data', (data) => {

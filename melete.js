@@ -51,7 +51,7 @@ function setupDropbox () {
 }
 
 function getSpeedSliderMs () {
-  return 10000 - (($('#speed').val()) / 100) * 9000;
+  return 95000 - (($('#speed').val()) / 100) * 9000;
 }
 
 function setupControls () {
@@ -225,6 +225,9 @@ function setupIpcEvents () {
         });
         ipcRenderer.send('inspectorMethod', {method: 'Debugger.stepOut', params: {}});
       }
+    }
+    else if (args.method === 'Runtime.exceptionThrown') {
+      writeToConsole(args.params.exceptionDetails.exception.description);
     }
     else if (args.method === 'Runtime.executionContextDestroyed') {
       console.log('done!');
