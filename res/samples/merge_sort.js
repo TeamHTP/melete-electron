@@ -32,4 +32,4 @@ function merge(left, right) {
   return result;
 }
 
-mergeSort(a);
+console.log(mergeSort(a));
