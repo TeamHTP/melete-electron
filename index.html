@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Melete - Understanding JavaScript through Visualization</title>
+  <link rel="stylesheet" type="text/css" href="./css/topcoat-desktop-light.min.css">
+  <link rel="stylesheet" type="text/css" href="./melete.css">
+  <link rel="stylesheet" type="text/css" href="./animate.css">
+</head>
+<body>
+  <div id="menubar">
+    <button class="topcoat-button" id="run">Run</button>
+    <button class="topcoat-button" id="stop">Stop</button>
+    <button class="topcoat-button" id="start">Auto-step</button>
+    <button class="topcoat-button" id="pause">Pause</button>
+    <button class="topcoat-button" id="step">Step</button>
+    Speed
+    <input type="range" class="topcoat-range" style="margin-top: 7px;" id="speed" value=100>
+  </div>
+  <table style="width: 100%;">
+    <thead>
+      <tr>
+        <th style="width: 835px;">Source</th>
+        <th>Variables</th>
+      </tr>
+    </thead>
+  </table>
+  <div id="source"></div>
+  <div class="vars">
+    <table style="width: 100%;">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Preview</th>
+        </tr>
+      </thead>
+      <tbody id="vars-tbody">
+        
+      </tbody>
+    </table>
+  </div>
+  <table style="width: 100%;">
+    <thead>
+      <tr>
+        <th>Call Stack</th>
+      </tr>
+    </thead>
+  </table>
+  <div class="scrolling-wrapper" id="scope-sources">
+  </div>
+  <table style="width: 100%;">
+    <thead>
+      <tr>
+        <th>Console</th>
+      </tr>
+    </thead>
+  </table>
+  <div class="console" id="console"></div>
+  <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+  <script
+    type="text/javascript"
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.3/ace.js"></script>
+  <script>if (window.module) module = window.module;</script>
+  <script type="text/javascript" src="./melete.js"></script>
+</body>
+</html>

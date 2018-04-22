@@ -8,6 +8,7 @@ const MeleteDebugger = require('./lib/melete-debugger.js');
 const {spawn} = require('child_process');
 
 let inspector;
+let meleteDebugger;
 let debuggerUrl;
 let win;
 
@@ -35,6 +36,14 @@ function createWindow () {
     event.sender.send('startDebugger', '');
   });
 
+  ipcMain.on('stopDebugger', (event, args) => {
+    console.log('closing debugger...');
+    meleteDebugger = null;
+    inspector.kill();
+    inspector = null;
+    event.sender.send('stopDebugger', '');
+  });
+
   //createInspectorProcess('./res/samples/merge_sort.js');
 
   win.on('closed', () => {
@@ -56,7 +65,7 @@ function createInspectorProcess (file) {
     if (line.startsWith('Debugger listening on ')) {
       debuggerUrl = line.match(/ws:\/\/.+?:.+?\/.{36}/g)[0];
       console.log(debuggerUrl);
-      let meleteDebugger = new MeleteDebugger(win, debuggerUrl);
+      meleteDebugger = new MeleteDebugger(win, debuggerUrl);
       meleteDebugger.attach();
     }
   });

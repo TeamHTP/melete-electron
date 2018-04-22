@@ -51,11 +51,12 @@ function setupDropbox () {
 }
 
 function getSpeedSliderMs () {
-  return 95000 - (($('#speed').val()) / 100) * 9000;
+  return 9500 - (($('#speed').val()) / 100) * 9000;
 }
 
 function setupControls () {
   $('#pause').prop('disabled', true);
+  $('#stop').prop('disabled', true);
 
   $('#run').click(() => {
     if (!started) {
@@ -76,6 +77,10 @@ function setupControls () {
       $('#pause').prop('disabled', true);
       $('#step').prop('disabled', true);
       $('#run').prop('disabled', true);
+      $('#stop').prop('disabled', false);
+    }
+    else {
+      ipcRenderer.send('run', {});
     }
   });
 
@@ -103,7 +108,18 @@ function setupControls () {
       $('#run').prop('disabled', true);
       started = true;
     }
+    $('#stop').prop('disabled', false);
     $('#speed').prop('disabled', true);
+  });
+
+  $('#stop').click(() => {
+    started = false;
+    run = false;
+    ipcRenderer.once('stopDebugger', (sender, args) => {
+      console.log(args);
+      reset();
+    });
+    ipcRenderer.send('stopDebugger');
   });
 
   $('#pause').click(() => {
@@ -131,6 +147,7 @@ function setupControls () {
       ipcRenderer.send('writeTempFile', {code: editor.getSession().getDocument().getValue()});
       $('#start').prop('disabled', false);
       $('#pause').prop('disabled', true);
+      $('#stop').prop('disabled', false);
       started = true;
     }
   });
@@ -214,7 +231,8 @@ function setupIpcEvents () {
         hightlightStackFrame(callFrames[0]);
         ipcRenderer.once('inspectorMethod', (sender, args) => {
           console.log(args);
-          renderVarTable(args.result);
+          if (typeof args.result !== 'undefined')
+            renderVarTable(args.result);
         });
         ipcRenderer.send('inspectorMethod', {method: 'Runtime.getProperties', params: {objectId: callFrames[0].scopeChain[0].object.objectId, generatePreview: true}});
       }
@@ -230,29 +248,40 @@ function setupIpcEvents () {
       writeToConsole(args.params.exceptionDetails.exception.description);
     }
     else if (args.method === 'Runtime.executionContextDestroyed') {
-      console.log('done!');
       ipcRenderer.send('close');
-      if (typeof editors[editors.length - 1].stackFrameMarker !== 'undefined') {
-        editors[editors.length - 1].getSession().removeMarker(editors[editors.length - 1].stackFrameMarker);
-      }
-      if (typeof editors[editors.length - 1].scopeMarker !== 'undefined') {
-        editors[editors.length - 1].getSession().removeMarker(editors[editors.length - 1].scopeMarker);
-      }
-      editor.setReadOnly(false);
-      started = false;
-      run = false;
-      $('#start').prop('disabled', false);
-      $('#pause').prop('disabled', true);
-      $('#run').prop('disabled', false);
-      $('#step').prop('disabled', false);
-      scriptId == -1;
-      ipcRenderer.removeAllListeners('inspectorMethod');
+      reset();
     }
   });
 
   ipcRenderer.on('stdout', (sender, data) => {
     writeToConsole(data.toString('utf-8'));
   });
+}
+
+function reset() {
+  console.log('done!');
+  while (editors.length > 1) {
+    $('#scope-sources .scope-source').last().remove();
+    editors.pop();
+  }
+
+  if (typeof editors[editors.length - 1].stackFrameMarker !== 'undefined') {
+    editors[editors.length - 1].getSession().removeMarker(editors[editors.length - 1].stackFrameMarker);
+  }
+  if (typeof editors[editors.length - 1].scopeMarker !== 'undefined') {
+    editors[editors.length - 1].getSession().removeMarker(editors[editors.length - 1].scopeMarker);
+  }
+  editor.setReadOnly(false);
+  started = false;
+  anonFrameDepth = 0;
+  run = false;
+  $('#start').prop('disabled', false);
+  $('#pause').prop('disabled', true);
+  $('#run').prop('disabled', false);
+  $('#step').prop('disabled', false);
+  $('#stop').prop('disabled', true);
+  scriptId == -1;
+  ipcRenderer.removeAllListeners('inspectorMethod');
 }
 
 function renderVarTable (objects) {
